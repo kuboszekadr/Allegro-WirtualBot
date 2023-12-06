@@ -1,4 +1,4 @@
-def get_token():
+def get_client_token():
     from requests.auth import HTTPBasicAuth
     import requests
 
@@ -32,6 +32,3 @@ def get_token():
     else:
         print(
             f"Failed to retrieve the access token. Status Code: {response.status_code}")
-
-
-print(get_token())
