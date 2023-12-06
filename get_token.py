@@ -32,3 +32,6 @@ def get_token():
     else:
         print(
             f"Failed to retrieve the access token. Status Code: {response.status_code}")
+
+
+print(get_token())

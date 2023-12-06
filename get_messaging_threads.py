@@ -1,8 +1,8 @@
 
-def get_disputes():
+def get_messaging_threads():
     from get_token import get_token
     import requests
-    url = 'https://api.allegro.pl/sale/disputes'
+    url = 'https://api.allegro.pl/messaging/threads'
 # Set up the headers with the token and the required Accept header
     headers = {
         'Authorization': f'Bearer {get_token()}',
@@ -22,4 +22,4 @@ def get_disputes():
         print(f"Failed to retrieve data. Status Code: {response.status_code}")
 
 
-print(get_disputes())
+print(get_messaging_threads())
