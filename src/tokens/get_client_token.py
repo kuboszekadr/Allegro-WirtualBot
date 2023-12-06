@@ -1,11 +1,12 @@
+from requests.auth import HTTPBasicAuth
+import requests
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+
 def get_client_token():
-    from requests.auth import HTTPBasicAuth
-    import requests
 
-    import os
-    from dotenv import load_dotenv
-
-    load_dotenv()
     client_id = os.environ['CLIENT_ID']
     client_secret = os.environ['CLIENT_SECRET']
 
@@ -27,7 +28,7 @@ def get_client_token():
     # Check if the request was successful
     if response.ok:
         # Parse the access token from the response
-        return response.json().get('access_token')
+        return response.json()['access_token']
         # print(f"Access Token: {access_token}")
     else:
         print(

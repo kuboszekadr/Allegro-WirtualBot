@@ -4,8 +4,6 @@ import time
 import os
 from dotenv import load_dotenv
 import requests
-import base64
-from get_messaging_threads import get_messaging_threads
 
 load_dotenv()
 CLIENT_ID = os.environ['CLIENT_ID']
