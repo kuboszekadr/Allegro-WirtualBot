@@ -1,0 +1,39 @@
+{
+  "disputes": [
+    {
+      "id": "a38812fa-6fef-4c9c-ac06-a0952b67ba78",
+      "subject": {
+        "name": "przedmiot jest uszkodzony"
+      },
+      "status": "ONGOING",
+      "messagesStatus": "NEW",
+      "buyer": {
+        "id": "3952032",
+        "login": "Buyer_login1"
+      },
+      "checkoutForm": {
+        "id": "31fc03c3-9ebc-11e8-8885-2bfbcd0aa7ab",
+        "createdAt": "2018-08-13T05:46:56.000Z"
+      },
+      "message": {
+        "id": "e75d97ba-18a7-4d1b-a7ee-d02ba1a21bba",
+        "text": "Niestety towar jest uszkodzony.",
+        "attachment": {
+          "fileName": "Zrzut_ekranu.png",
+          "url": "https://upload.allegro.pl/sale/dispute-attachments/731f2401-7b79-4212-be9e-591464526cfe"
+        },
+        "author": {
+          "login": "Buyer_login1",
+          "role": "BUYER"
+        },
+        "createdAt": "2018-09-14T06:34:24.258Z"
+      },
+      "messagesCount": 5,
+      "lastMessageCreationDate": "2018-09-14T06:34:24.258Z",
+      "claim": {
+        "name": "częściowy zwrot pieniędzy",
+        "description": "Proszę o zwrot 25zł"
+      }
+    }
+  ]
+}
