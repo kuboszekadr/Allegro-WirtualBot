@@ -1,6 +1,7 @@
 import requests
 import json
 import logging
+import os
 
 
 class Threads:
@@ -15,31 +16,30 @@ class Threads:
             'Authorization': f'Bearer {self.device_token}',
             'Accept': 'application/vnd.allegro.public.v1+json',
             'Content-Type': 'application/vnd.allegro.public.v1+json'
-        }    
-        return headers    
+        }
+        return headers
 
     def send_message(self, dispute_id: str, content: str):
         url = f'{self.endpoint}/{dispute_id}/messages'
-        
+
         payload = {
             "text": content,
             "attachments": [],
             "type": "REGULAR"
         }
 
-        r  = requests.post(
-            url, 
-            headers=self._headers, 
+        r = requests.post(
+            url,
+            headers=self._headers,
             data=json.dumps(payload)
-            )
-    
+        )
+
         if not r.ok:
             logging.error(
-            f"Failed to post the message. Status Code: {r.status_code}")
+                f"Failed to post the message. Status Code: {r.status_code}")
             return
 
         logging.info("Message posted successfully.")
-
 
     @property
     def thread_list(self, limit: int = 5) -> dict:
@@ -56,4 +56,7 @@ class Threads:
             return results
 
         results = r.json()['threads']
+        with open('./.Threads.json', 'w') as f:
+            json.dump(results, f)
+
         return results

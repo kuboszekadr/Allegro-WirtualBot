@@ -1,12 +1,12 @@
 import sqlite3
 import json
-from src.get_messaging_threads import get_messaging_threads
 
 # Załóżmy, że 'data' to Twój JSON
-data = get_messaging_threads()
-# Załaduj JSON jako słownik Pythona
+data = json.loads('./Threads.json'
+                  )  # Załaduj JSON jako słownik Pythona
 
 print(data)
+
 # # Połączenie z bazą danych SQLite
 # conn = sqlite3.connect('SQLite_Python.db')
 # c = conn.cursor()
