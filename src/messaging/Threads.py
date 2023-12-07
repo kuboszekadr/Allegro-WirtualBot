@@ -95,7 +95,7 @@ class Threads:
             reverse=True
         )
 
-        msgs_filtered = filter(lambda x: x['author'] != user, msgs_sorted)
+        msgs_filtered = filter(lambda x: x['author']['login'] == user, msgs_sorted)
         msgs_filtered = list(msgs_filtered)
 
         msg = msgs_filtered[0]
@@ -125,7 +125,7 @@ if __name__ == '__main__':
     thread = threads.get(threads_list[0]['id'])
 
     root = "adrianq123"
-    user = "bendarekparts"
+    user = "bednarekparts"
 
     msgs = threads.list_messages(threads_list[0]['id'])
 
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     
     to_answer = root_last_msg[1] < client_last_msg[1]
 
-    if True:
+    if to_answer:
         threads.send_message(threads_list[0]['id'], "Hej Mordeczko, jak tam? Nasz pracownik wkrótce się z Tobą skonktuje.")
 
     pass
