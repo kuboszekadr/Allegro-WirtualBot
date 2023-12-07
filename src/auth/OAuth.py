@@ -1,10 +1,12 @@
 import requests
 import json
 import os
+import datetime
 
 from time import sleep
 
 from requests.auth import HTTPBasicAuth
+
 
 class OAuth:
     endpoint = 'https://allegro.pl/auth/oauth'
@@ -15,16 +17,21 @@ class OAuth:
 
     @property
     def token(self):
+        ts = datetime.datetime.now().timestamp()
 
         if os.path.exists('./.token.json'):
             with open('./.token.json', 'r') as f:
                 result = json.load(f)
+
+            if result['expiration_date'] <= ts:
+                result = self.get_next_token(result['refresh_token'])
         else:
             data = self.device_code
             token_data = oauth.await_for_access_token(data['interval'], data['device_code'])
             token_data = token_data.json()
 
             with open('./.token.json', 'w') as f:
+                token_data['expiration_date'] = int(datetime.datetime.now().timestamp()) + token_data['expires_in']
                 json.dump(token_data, f)
 
         return result['access_token'], result['refresh_token']
@@ -73,8 +80,9 @@ class OAuth:
         access_token = token_data['access_token']
 
         with open('./.token.json', 'w') as f:
+            token_data['expiration_date'] = int(datetime.datetime.now().timestamp()) + token_data['expires_in']
             json.dump(token_data, f)        
-        return access_token        
+        return access_token, token_data['refresh_token']        
     
     @property
     def device_code(self):
