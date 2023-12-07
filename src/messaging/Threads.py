@@ -43,7 +43,6 @@ class Threads:
 
         logging.info("Message posted successfully.")
 
-    @property
     def thread_list(self, limit: int = 5) -> dict:
         r = requests.get(
             self.endpoint,
@@ -99,18 +98,22 @@ class Threads:
             lambda x: x['author']['login'] == user, msgs_sorted)
         msgs_filtered = list(msgs_filtered)
 
-        msg = msgs_filtered[0]
-        timestamp = msg['createdAt']
+        if msgs_filtered:
+            msg = msgs_filtered[0]
+            timestamp = msg['createdAt']
 
-        return msg, timestamp
+            return msg, timestamp
+        else:
+            return None, None
 
     def get_recent_threads(self, limit: int = 20) -> List[dict]:
         one_day_ago = datetime.now(pytz.utc) - timedelta(days=1)
         one_day_ago_str = one_day_ago.isoformat()
 
         threads = self.thread_list(limit=limit)
-        recent_threads = [t for t in threads if t['lastMessage']
-                          ['createdAt'] >= one_day_ago_str]
+        recent_threads = [
+            t for t in threads if t['lastMessageDateTime'] >= one_day_ago_str]
+
         return recent_threads
 
 
@@ -131,21 +134,22 @@ if __name__ == '__main__':
         client_secret=os.environ['CLIENT_SECRET']
     )
     token = oauth.token[0]
-
     threads = Threads(access_token=token)
 
-    recent_threads = threads.get_recent_threads()
-    print(recent_threads)
+    # threads_list = threads.thread_list()
+    # thread = threads_list[0]['id']
 
-    # threads_list = threads.thread_list
-    # thread = threads.get(threads_list[0]['id'])
-
-    # root = "adrianq123"
+    root = "adrianq123"
     # user = "bednarekparts"
 
-    # msgs = threads.list_messages(threads_list[0]['id'])
+    recent_threads = threads.get_recent_threads()
+    msgs = threads.list_messages(recent_threads[0]['id'])
+    root_last_msg = threads.get_last_message_from_user(msgs['messages'], root)
+    if root_last_msg == None:
+        threads.send_message(
+            recent_threads[0]['id'], "XXX Hej SEXY Mordeczko, jak tam? Nasz pracownik wkrótce się z Tobą skonktuje.")
+    pass
 
-    # root_last_msg = threads.get_last_message_from_user(msgs['messages'], root)
     # client_last_msg = threads.get_last_message_from_user(
     #     msgs['messages'], user)
 
@@ -154,5 +158,3 @@ if __name__ == '__main__':
     # if to_answer:
     #     threads.send_message(
     #         threads_list[0]['id'], "Hej Mordeczko, jak tam? Nasz pracownik wkrótce się z Tobą skonktuje.")
-
-    pass

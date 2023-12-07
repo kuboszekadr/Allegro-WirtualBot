@@ -27,32 +27,32 @@ class OAuth:
                 result = self.get_next_token(result['refresh_token'])
         else:
             data = self.device_code
-            token_data = oauth.await_for_access_token(data['interval'], data['device_code'])
+            token_data = self.await_for_access_token(
+                data['interval'], data['device_code'])
             token_data = token_data.json()
 
             with open('./.token.json', 'w') as f:
-                token_data['expiration_date'] = int(datetime.datetime.now().timestamp()) + token_data['expires_in']
+                token_data['expiration_date'] = int(
+                    datetime.datetime.now().timestamp()) + token_data['expires_in']
                 json.dump(token_data, f)
 
         return result['access_token'], result['refresh_token']
-
 
     def access_token(self, device_code: str) -> str:
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
         data = {
             'grant_type': 'urn:ietf:params:oauth:grant-type:device_code',
             'device_code': device_code
-            }
-        
+        }
+
         response = requests.post(
-            f"{self.endpoint}/token", 
+            f"{self.endpoint}/token",
             auth=(self.client_id, self.client_secret),
-            headers=headers, 
-            data=data, 
+            headers=headers,
+            data=data,
             verify=False)
-        
+
         return response.status_code, response
-    
 
     def await_for_access_token(self, inteval: int, device_code: str):
         while True:
@@ -61,51 +61,51 @@ class OAuth:
             if status_code == 200:
                 return data
 
-   
     def get_next_token(self, refresh_token: str) -> str:
         data = {
-            'grant_type': 'refresh_token', 
+            'grant_type': 'refresh_token',
             'refresh_token': refresh_token
-            }
-        
+        }
+
         access_token_response = requests.post(
-            f'{self.endpoint}/token', 
-            data=data, 
+            f'{self.endpoint}/token',
+            data=data,
             verify=False,
-            allow_redirects=False, 
+            allow_redirects=False,
             auth=(self.client_id, self.client_secret)
-            )
-        
+        )
+
         token_data = access_token_response.json()
         access_token = token_data['access_token']
 
         with open('./.token.json', 'w') as f:
-            token_data['expiration_date'] = int(datetime.datetime.now().timestamp()) + token_data['expires_in']
-            json.dump(token_data, f)        
-        return access_token, token_data['refresh_token']        
-    
+            token_data['expiration_date'] = int(
+                datetime.datetime.now().timestamp()) + token_data['expires_in']
+            json.dump(token_data, f)
+        return access_token, token_data['refresh_token']
+
     @property
     def device_code(self):
         payload = {'client_id': self.client_id}
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
 
         r = requests.post(
-            url=f"{self.endpoint}/device", 
+            url=f"{self.endpoint}/device",
             auth=(self.client_id, self.client_secret),
-            headers=headers, 
-            data=payload, 
+            headers=headers,
+            data=payload,
             verify=False
-            )
+        )
         return r.json()
-     
+
 
 if __name__ == '__main__':
     from dotenv import load_dotenv
     load_dotenv()
-    
+
     oauth = OAuth(
-        client_id=os.environ['CLIENT_ID'], 
+        client_id=os.environ['CLIENT_ID'],
         client_secret=os.environ['CLIENT_SECRET']
-        )
+    )
 
     print(oauth.token)
