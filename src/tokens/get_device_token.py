@@ -2,12 +2,10 @@ import requests
 import json
 import time
 import os
-from dotenv import load_dotenv
 import requests
 
-load_dotenv()
-CLIENT_ID = os.environ['CLIENT_ID']
-CLIENT_SECRET = os.environ['CLIENT_SECRET']
+CLIENT_ID = "d1c1a54a29484034928ee75c23b2dba8"
+CLIENT_SECRET = "C5HPyjipUvEzfHoC9zTidXwoTtGA6azasFgp9rhW32xPbkMdfq4pnIlNTjyoph9n"
 
 CODE_URL = "https://allegro.pl/auth/oauth/device"
 TOKEN_URL = "https://allegro.pl/auth/oauth/token"

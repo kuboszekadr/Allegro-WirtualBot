@@ -3,3 +3,4 @@ __pycache__
 .DS_Store
 check_message.py
 .venv
+.token.json
