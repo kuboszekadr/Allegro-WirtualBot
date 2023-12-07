@@ -2,14 +2,15 @@ import requests
 import os
 import logging
 from dotenv import load_dotenv
+
 load_dotenv()
 device_token = os.environ['DEVICE_TOKEN']
 
 
 def get_messaging_threads():
 
-    url = 'https://api.allegro.pl/messaging/threads?limit=2'
-# Set up the headers with the token and the required Accept header
+    url = 'https://api.allegro.pl/messaging/threads?limit=4'
+    # Set up the headers with the token and the required Accept header
     headers = {
         'Authorization': f'Bearer {device_token}',
         'Accept': 'application/vnd.allegro.public.v1+json'
@@ -30,4 +31,4 @@ def get_messaging_threads():
             f"Failed to retrieve data. Status Code: {response.status_code}")
 
 
-print(get_messaging_threads().get('threads'))
+print(get_messaging_threads())

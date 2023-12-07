@@ -12,3 +12,5 @@ post_auto_message(thread_id)
 logging.info(f"Auto message sent!")
 
 #     last_data = current_data
+
+print(get_messaging_threads())

@@ -4,10 +4,9 @@ import os
 import logging
 from dotenv import load_dotenv
 load_dotenv()
-dispute_id = 'b1MLXqVgKgTUUgkmPy8q1rTJGXuoRdjDvqzPHCm0ROP'
 
 
-def post_auto_message(dispute_id):
+def post_auto_message(thread_id):
     device_token = os.environ['DEVICE_TOKEN']
     headers = {
         'Authorization': f'Bearer {device_token}',
@@ -21,7 +20,7 @@ def post_auto_message(dispute_id):
         "type": "REGULAR"
     }
 
-    url = f'https://api.allegro.pl/messaging/threads/{dispute_id}/messages'
+    url = f'https://api.allegro.pl/messaging/threads/{thread_id}/messages'
 
     response = requests.post(url, headers=headers, data=json.dumps(data))
 
@@ -30,6 +29,3 @@ def post_auto_message(dispute_id):
     else:
         logging.error(
             f"Failed to post the message. Status Code: {response.status_code}")
-
-
-post_auto_message(dispute_id)
