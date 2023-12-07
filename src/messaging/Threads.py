@@ -2,6 +2,8 @@ import requests
 import json
 import logging
 
+from typing import List, Any
+
 
 class Threads:
     endpoint = 'https://api.allegro.pl/messaging/threads'
@@ -82,6 +84,22 @@ class Threads:
 
         return r.json()
 
+    def get_last_message_from_user(self, msgs: List[dict]) -> Any:
+        msgs_sorted = sorted(
+            interable=msgs,
+            key=lambda x: x['createdAt'],
+            reverse=True
+        )
+
+        root = "adrianq123"
+        msgs_filtered = msgs_sorted.filter(lambda x: x['author'] != root)
+        msgs_filtered = list(msgs_filtered)
+
+        msg = msgs_filtered[0]
+        timestamp = msg['createdAt']
+
+        return msg, timestamp
+
 if __name__ == '__main__':
     import os
     import sys
@@ -104,5 +122,5 @@ if __name__ == '__main__':
     thread = threads.get(threads_list[0]['id'])
 
     msgs = threads.list_messages(threads_list[0]['id'])
-    
+    msg = threads.get_last_message_from_user(msgs)
     pass
