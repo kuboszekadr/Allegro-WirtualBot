@@ -13,8 +13,6 @@ class OAuth:
         self.client_id = client_id
         self.client_secret = client_secret
 
-        self._auth = HTTPBasicAuth(self.client_id, self.client_secret)
-    
     @property
     def token(self):
 
@@ -24,10 +22,13 @@ class OAuth:
         else:
             data = self.device_code
             token_data = oauth.await_for_access_token(data['interval'], data['device_code'])
-        
+            token_data = token_data.json()
+
             with open('./.token.json', 'w') as f:
-                json.dump(token_data.json(), f)
+                json.dump(token_data, f)
+
         return result['access_token'], result['refresh_token']
+
 
     def access_token(self, device_code: str) -> str:
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
@@ -45,6 +46,7 @@ class OAuth:
         
         return response.status_code, response
     
+
     def await_for_access_token(self, inteval: int, device_code: str):
         while True:
             sleep(inteval)
@@ -52,40 +54,27 @@ class OAuth:
             if status_code == 200:
                 return data
 
-    # def refresh_token(self, authorization_code: str) -> str:
-    #     data = {
-    #         'grant_type': 'authorization_code', 
-    #         'code': authorization_code
-    #         }
-    #     access_token_response = requests.post(
-    #         f'{self.endpoint}/token', 
-    #         data=data, 
-    #         verify=False,
-    #         allow_redirects=False, 
-    #         auth=(self.client_id, self.client_secret)
-    #         )
+   
+    def get_next_token(self, refresh_token: str) -> str:
+        data = {
+            'grant_type': 'refresh_token', 
+            'refresh_token': refresh_token
+            }
         
-    #     tokens = json.loads(access_token_response.text)
-    #     access_token = tokens['refresh_token']
-    #     return access_token
-    
-    # def get_next_token(self, refresh_token: str) -> str:
-    #     data = {
-    #         'grant_type': 'refresh_token', 
-    #         'refresh_token': refresh_token
-    #         }
+        access_token_response = requests.post(
+            f'{self.endpoint}/token', 
+            data=data, 
+            verify=False,
+            allow_redirects=False, 
+            auth=(self.client_id, self.client_secret)
+            )
         
-    #     access_token_response = requests.post(
-    #         f'{self.endpoint}/token', 
-    #         data=data, 
-    #         verify=False,
-    #         allow_redirects=False, 
-    #         auth=(self.client_id, self.client_secret)
-    #         )
-        
-    #     tokens = json.loads(access_token_response.text)
-    #     access_token = tokens['access_token']
-    #     return access_token        
+        token_data = access_token_response.json()
+        access_token = token_data['access_token']
+
+        with open('./.token.json', 'w') as f:
+            json.dump(token_data, f)        
+        return access_token        
     
     @property
     def device_code(self):
@@ -103,7 +92,12 @@ class OAuth:
      
 
 if __name__ == '__main__':
-    oauth = OAuth("d1c1a54a29484034928ee75c23b2dba8", "C5HPyjipUvEzfHoC9zTidXwoTtGA6azasFgp9rhW32xPbkMdfq4pnIlNTjyoph9n")
+    from dotenv import load_dotenv
+    load_dotenv()
     
-    code = oauth.device_code
-    oauth.await_for_access_token(code['interval'], code)
+    oauth = OAuth(
+        client_id=os.environ['CLIENT_ID'], 
+        client_secret=os.environ['CLIENT_SECRET']
+        )
+
+    print(oauth.token)
