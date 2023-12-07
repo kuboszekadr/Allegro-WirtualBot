@@ -65,6 +65,23 @@ class Threads:
         result = r.json()
         return result
 
+    def list_messages(self, thread_id: str, limit: int=None, offset: int=None, before: str=None, after: str=None):
+        params = {
+            'limit': limit,
+            'offset': offset,
+            'before': before,
+            'after': after
+        }
+        params = {k:v for k, v in params.items() if v}
+
+        r = requests.get(
+            f"{self.endpoint}/{thread_id}/messages",
+            headers=self._headers,
+            params=params
+        )
+
+        return r.json()
+
 if __name__ == '__main__':
     import os
     import sys
@@ -85,4 +102,7 @@ if __name__ == '__main__':
 
     threads_list = threads.thread_list
     thread = threads.get(threads_list[0]['id'])
+
+    msgs = threads.list_messages(threads_list[0]['id'])
+    
     pass
