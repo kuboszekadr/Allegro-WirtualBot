@@ -130,4 +130,7 @@ if __name__ == '__main__':
     
     to_answer = root_last_msg[1] < client_last_msg[1]
 
+    if True:
+        threads.send_message(threads_list[0]['id'], "Hej Mordeczko, jak tam? Nasz pracownik wkrótce się z Tobą skonktuje.")
+
     pass
