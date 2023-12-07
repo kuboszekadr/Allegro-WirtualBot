@@ -55,7 +55,7 @@ class Threads:
         if not r.ok:
             logging.error(
                 f"Failed to retrieve data. Status Code: {r.status_code}")
-            return results
+            return r
 
         results = r.json()['threads']
         with open('./.Threads.json', 'w') as f:
@@ -88,15 +88,14 @@ class Threads:
 
         return r.json()
 
-    def get_last_message_from_user(self, msgs: List[dict]) -> Any:
+    def get_last_message_from_user(self, msgs: List[dict], user: str) -> Any:
         msgs_sorted = sorted(
             interable=msgs,
             key=lambda x: x['createdAt'],
             reverse=True
         )
 
-        root = "adrianq123"
-        msgs_filtered = msgs_sorted.filter(lambda x: x['author'] != root)
+        msgs_filtered = filter(msgs_sorted, lambda x: x['author'] != user)
         msgs_filtered = list(msgs_filtered)
 
         msg = msgs_filtered[0]
@@ -125,6 +124,14 @@ if __name__ == '__main__':
     threads_list = threads.thread_list
     thread = threads.get(threads_list[0]['id'])
 
+    root = "adrianq123"
+    user = "bendarekparts"
+
     msgs = threads.list_messages(threads_list[0]['id'])
-    msg = threads.get_last_message_from_user(msgs)
+
+    root_last_msg = threads.get_last_message_from_user(msgs, root)
+    client_last_msg = threads.get_last_message_from_user(msgs, user)
+    
+    to_answer = root_last_msg[1] < client_last_msg[1]
+
     pass
