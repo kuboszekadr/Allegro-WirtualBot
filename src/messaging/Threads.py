@@ -2,7 +2,9 @@ import requests
 import json
 import logging
 import os
+import pytz
 
+from datetime import datetime, timedelta
 from typing import List, Any
 
 
@@ -120,8 +122,6 @@ class Threads:
 if __name__ == '__main__':
     import os
     import sys
-    from datetime import datetime, timedelta
-    import pytz
 
     sys.path.append(os.getcwd())
 
@@ -136,25 +136,12 @@ if __name__ == '__main__':
     token = oauth.token[0]
     threads = Threads(access_token=token)
 
-    # threads_list = threads.thread_list()
-    # thread = threads_list[0]['id']
-
     root = "adrianq123"
-    # user = "bednarekparts"
 
     recent_threads = threads.get_recent_threads()
     msgs = threads.list_messages(recent_threads[0]['id'])
     root_last_msg = threads.get_last_message_from_user(msgs['messages'], root)
-    if root_last_msg == None:
+    
+    if root_last_msg[0] == None:
         threads.send_message(
             recent_threads[0]['id'], "XXX Hej SEXY Mordeczko, jak tam? Nasz pracownik wkrótce się z Tobą skonktuje.")
-    pass
-
-    # client_last_msg = threads.get_last_message_from_user(
-    #     msgs['messages'], user)
-
-    # to_answer = root_last_msg[1] < client_last_msg[1]
-
-    # if to_answer:
-    #     threads.send_message(
-    #         threads_list[0]['id'], "Hej Mordeczko, jak tam? Nasz pracownik wkrótce się z Tobą skonktuje.")

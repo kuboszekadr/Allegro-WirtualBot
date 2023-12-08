@@ -1,16 +1,30 @@
-import logging
-from src import get_messaging_threads
-from src import post_auto_message
+import os
+import sys
 
-#     if last_data is not None and current_data != last_data:
+from tqdm import tqdm
 
-logging.info(f"Monitoring disputes for changes...")
-last_data = None
-current_data = get_messaging_threads()
-thread_id = current_data.get('threads')[0].get('id')
-post_auto_message(thread_id)
-logging.info(f"Auto message sent!")
+from src.auth.OAuth import OAuth
+from src.messaging.Threads import Threads
 
-#     last_data = current_data
+user = os.environ['USER_NAME']
+oauth = OAuth(
+    client_id=os.environ['CLIENT_ID'],
+    client_secret=os.environ['CLIENT_SECRET']
+)
+token = oauth.token[0]
 
-print(get_messaging_threads())
+threads = Threads(access_token=token)
+threads_list = threads.get_recent_threads()
+
+for thread in threads_list:
+    msgs = threads.list_messages(thread['id'])
+    root_last_msg = threads.get_last_message_from_user(msgs['messages'], user)
+
+    if root_last_msg[0] is None:
+        threads.send_message(
+            thread['id'], 
+            """Dzień dobry, 
+            bardzo dziękujemy zainteresowanie naszą aukcją i kontakt z nami. Nasz asystent w niedługim czasie wróci z odpowiedzią na Twoje pytanie. 
+            Pozdrawiamy serdecznie!
+            """
+            )

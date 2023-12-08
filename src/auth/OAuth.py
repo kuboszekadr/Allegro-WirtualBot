@@ -25,6 +25,8 @@ class OAuth:
 
             if result['expiration_date'] <= ts:
                 result = self.get_next_token(result['refresh_token'])
+                
+            return result['access_token'], result['refresh_token']
         else:
             data = self.device_code
             token_data = self.await_for_access_token(
@@ -35,8 +37,7 @@ class OAuth:
                 token_data['expiration_date'] = int(
                     datetime.datetime.now().timestamp()) + token_data['expires_in']
                 json.dump(token_data, f)
-
-        return result['access_token'], result['refresh_token']
+            return token_data['access_token'], token_data['refresh_token']
 
     def access_token(self, device_code: str) -> str:
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
