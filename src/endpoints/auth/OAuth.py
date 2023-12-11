@@ -83,7 +83,10 @@ class OAuth:
             token_data['expiration_date'] = int(
                 datetime.datetime.now().timestamp()) + token_data['expires_in']
             json.dump(token_data, f)
-        return access_token, token_data['refresh_token']
+        return {
+            'access_token': access_token, 
+            'refresh_token': token_data['refresh_token']
+        }
 
     @property
     def device_code(self):

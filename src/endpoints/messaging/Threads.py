@@ -109,7 +109,7 @@ class Threads:
             return None, None
 
     def get_recent_threads(self, limit: int = 20) -> List[dict]:
-        one_day_ago = datetime.now(pytz.utc) - timedelta(days=1)
+        one_day_ago = datetime.now(pytz.utc) - timedelta(days=5)
         one_day_ago_str = one_day_ago.isoformat()
 
         threads = self.thread_list(limit=limit)
@@ -143,5 +143,7 @@ if __name__ == '__main__':
     root_last_msg = threads.get_last_message_from_user(msgs['messages'], root)
     
     if root_last_msg[0] == None:
-        threads.send_message(
-            recent_threads[0]['id'], "XXX Hej SEXY Mordeczko, jak tam? Nasz pracownik wkrótce się z Tobą skonktuje.")
+        pass
+        # threads.send_message(
+
+            # recent_threads[0]['id'], "XXX Hej SEXY Mordeczko, jak tam? Nasz pracownik wkrótce się z Tobą skonktuje.")
