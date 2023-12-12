@@ -17,9 +17,9 @@ logging.basicConfig(
 logging.info('Starting Allegro Assistant')
 
 token = Token(
-    client_id=os.getenv('CLIENT_ID'),
-    client_secret=os.getenv('CLIENT_SECRET'),
-    device_code=os.getenv('DEVICE_CODE')
+    client_id=config.allegro.client_id,
+    client_secret=config.allegro.client_secret,
+    device_code=config.allegro.device_code
 )
 
 threads = Threads(token)
