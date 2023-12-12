@@ -4,12 +4,15 @@ from typing import List, Optional
 class Thread (BaseModel):
     id: str
 
+class Offer (BaseModel):
+    id: str
+
 class Author (BaseModel):
     login: str
     isInterlocutor: bool
 
 class RelatesTo (BaseModel):
-    offer: Optional [str]
+    offer: Optional [Offer]
     order: Optional [str]
 
 class Message (BaseModel):
