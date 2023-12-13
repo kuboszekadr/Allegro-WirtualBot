@@ -17,9 +17,9 @@ class Token:
 
     def __init__(
             self, 
+            client_id: str, 
+            client_secret: str, 
             device_code: Optional[str] = None,
-            client_id: Optional[str] = None, 
-            client_secret: Optional[str] = None, 
             ):
         self.client_id: str = client_id
         self.client_secret: str = client_secret
@@ -27,12 +27,8 @@ class Token:
 
         self.access_token: Optional(AccessToken) = AccessToken.load_from_file()
 
-        if device_code is None and client_id is None and client_secret is None:
-            # TODO: Handle this error
-            raise Exception('Missing required arguments.')
-
         if self.access_token is None:
-            self.access_token = self.await_for_access_token(device_code)
+            self.access_token = self.init_device()
 
     @property
     def value(self) -> str:
@@ -48,6 +44,9 @@ class Token:
     def cache(func):
         def wrapper(*args, **kwargs):
                 token = func(*args, **kwargs)
+                if token is None:
+                    return None
+                
                 with open('./.token.json', 'w') as f:
                     f.writelines(token.model_dump_json(indent=4))
         return wrapper
@@ -87,16 +86,44 @@ class Token:
             verify=False
             )
 
-        token = AccessToken(**response)
+        token = None
+        if response.ok:
+            token = AccessToken.model_validate(response.json())
         return token
+
+    def get_device_code(self):
+        # source: https://developer.allegro.pl/tutorials/uwierzytelnianie-i-autoryzacja-zlq9e75GdIR#python
+        payload = {'client_id': self.client_id}
+        headers = {'Content-type': 'application/x-www-form-urlencoded'}
+
+        response = requests.post(
+            "https://allegro.pl/auth/oauth/device", 
+            auth=(self.client_id, self.client_secret),
+            headers=headers, 
+            data=payload, 
+            verify=False
+            )
+        
+        result = response.json()
+        
+        self.device_code = result['device_code']
+        return result
+
 
     def await_for_access_token(self):
         while True:
-            sleep(1)
-            status_code, data = self.get_access_token(self.device_code)
-            if status_code == 200:
-                return data
+            sleep(5)
+            token = self.get_access_token(self.device_code)
 
+            if token is not None:
+                return token
+
+    def init_device(self):
+        device_code = self.get_device_code()
+        print(device_code)
+        print(f"Go to: {device_code['verification_uri_complete']}")
+        token = self.await_for_access_token()
+        print(token)
 
 if __name__ == '__main__':
     from src.AppConfig import config

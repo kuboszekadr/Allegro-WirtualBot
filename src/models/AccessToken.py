@@ -15,7 +15,7 @@ class AccessToken (BaseModel):
     allegro_api: bool
     iss: str
     jti: str
-    expiration_date: Optional[int]
+    expiration_date: int = None
 
     def model_post_init(self, *args, **kwargs):
         if self.expiration_date is None:    
@@ -30,4 +30,3 @@ class AccessToken (BaseModel):
             data = json.load(f)
             result = AccessToken.model_validate(data)
             return result
-
