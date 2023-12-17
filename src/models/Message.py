@@ -15,6 +15,12 @@ class RelatesTo (BaseModel):
     offer: Optional [Offer]
     order: Optional [str]
 
+class Attachment (BaseModel):
+    fileName: str
+    mimeType: str
+    url: str
+    status: str
+
 class Message (BaseModel):
     id: str
     status: str
@@ -26,4 +32,4 @@ class Message (BaseModel):
     subject: Optional [str]
     relatesTo: RelatesTo
     hasAdditionalAttachments: bool
-    attachments: List [str]
+    attachments: List [Attachment]

@@ -1,4 +1,3 @@
-import os
 import logging
 
 from src.AppConfig import config

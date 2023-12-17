@@ -69,7 +69,7 @@ class Thread:
             )
         msgs_filtered = list(msgs_filtered)
 
-        if msgs_filtered is None:
+        if msgs_filtered is None or len(msgs_filtered) == 0:
             return None
 
         msg = msgs_filtered[0]
