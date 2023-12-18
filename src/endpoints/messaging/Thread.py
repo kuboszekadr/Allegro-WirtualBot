@@ -5,7 +5,7 @@ import logging
 from typing import List
 
 from src.endpoints.auth.Token import Token
-from src.models.Message import Message
+from src.models.Message import Message, MessageType
 
 
 class Thread:
@@ -52,28 +52,44 @@ class Thread:
         self.msgs = results
         return results
 
-    def get_last_message_from_user(
-            self, 
-            user: str
-        ) -> Message:
+    # def get_last_message_from_user(
+    #         self, 
+    #         user: str
+    #     ) -> Message:
 
+    #     msgs_sorted = sorted(
+    #         self.msgs,
+    #         key=lambda x: x.createdAt,
+    #         reverse=True
+    #     )
+
+    #     # TODO
+    #     # RUN every 5minutes, check if new message arrived
+    #     msgs_filtered = filter(
+    #         lambda x: \
+    #             (x.author.login == user)
+    #             # TODO HERE
+    #             and (x.type == MessageType.ASK_QUESTION), 
+    #         msgs_sorted
+    #         )
+    #     msgs_filtered = list(msgs_filtered)
+
+    #     if msgs_filtered is None or len(msgs_filtered) == 0:
+    #         return None
+
+    #     msg = msgs_filtered[0]
+    #     return msg
+
+    def requires_answer(self, user: str) -> bool:
         msgs_sorted = sorted(
             self.msgs,
             key=lambda x: x.createdAt,
             reverse=True
         )
 
-        msgs_filtered = filter(
-            lambda x: x.author.login == user, 
-            msgs_sorted
-            )
-        msgs_filtered = list(msgs_filtered)
-
-        if msgs_filtered is None or len(msgs_filtered) == 0:
-            return None
-
-        msg = msgs_filtered[0]
-        return msg
+        last_message = msgs_sorted[0]
+        result = last_message.author.login != user
+        return result
 
     def send_message(self, content: str) -> int:
         url = f'{self.endpoint}/{self.id}/messages'

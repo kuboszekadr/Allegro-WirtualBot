@@ -57,6 +57,7 @@ class Token:
 
     @cache
     def refresh(self, refresh_token: str) -> str:
+        logging.info('Refreshing token...')
         data = {
             'grant_type': 'refresh_token',
             'refresh_token': refresh_token

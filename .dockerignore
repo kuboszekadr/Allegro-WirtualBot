@@ -1,0 +1,5 @@
+.token.json
+.vscode
+.venv
+.env-example
+.env
