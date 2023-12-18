@@ -52,34 +52,6 @@ class Thread:
         self.msgs = results
         return results
 
-    # def get_last_message_from_user(
-    #         self, 
-    #         user: str
-    #     ) -> Message:
-
-    #     msgs_sorted = sorted(
-    #         self.msgs,
-    #         key=lambda x: x.createdAt,
-    #         reverse=True
-    #     )
-
-    #     # TODO
-    #     # RUN every 5minutes, check if new message arrived
-    #     msgs_filtered = filter(
-    #         lambda x: \
-    #             (x.author.login == user)
-    #             # TODO HERE
-    #             and (x.type == MessageType.ASK_QUESTION), 
-    #         msgs_sorted
-    #         )
-    #     msgs_filtered = list(msgs_filtered)
-
-    #     if msgs_filtered is None or len(msgs_filtered) == 0:
-    #         return None
-
-    #     msg = msgs_filtered[0]
-    #     return msg
-
     def requires_answer(self, user: str) -> bool:
         msgs_sorted = sorted(
             self.msgs,
