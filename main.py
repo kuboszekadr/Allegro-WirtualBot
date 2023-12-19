@@ -8,6 +8,8 @@ from src.AppConfig import config
 
 from src.endpoints.auth.Token import Token
 from src.endpoints.messaging.Threads import Threads
+from src.endpoints.disputes.Disputes import Disputes
+
 
 logging.info('Starting Allegro Assistant')
 log_file = dt.now().strftime("%Y-%m-%d.log")
@@ -42,3 +44,18 @@ for thread in tqdm(threads.threads):
         sleep(1)
 
 logging.info(f'Allegro Assistant finished, sent {sent} msgs')
+
+disputes = Disputes(token)
+disputes.get()
+
+sent_disputes = 0
+
+for dispute in tqdm(disputes.disputes):
+    logging.info(f"Sending message to dispute: {dispute.id}")
+    dispute.send_message("""Dzień dobry, 
+                        bardzo dziękujemy za zgłoszenie sporu. Nasz asystent w niedługim czasie wróci z odpowiedzią na Twoje pytanie. Pozdrawiamy serdecznie!""")
+    logging.info(f"Sending message to dispute: {dispute.id} - DONE")
+    sent_disputes += 1
+    sleep(1)
+
+logging.info(f'Allegro Assistant finished, sent {sent} msgs and {sent_disputes} dispute msgs')
