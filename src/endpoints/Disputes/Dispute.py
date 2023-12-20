@@ -5,15 +5,16 @@ import logging
 from typing import List
 
 from src.endpoints.auth.Token import Token
-from src.models.Dispute import Dispute
+from src.models.Message import Message, MessageType
 
 
-class Disputes:
+class Dispute:
     endpoint = 'https://api.allegro.pl/sale/disputes'
 
-    def __init__(self, token: Token) -> None:
+    def __init__(self, id: str, token: Token) -> None:
+        self.id: str = id
         self.token: Token = token
-        self.disputes: List[Dispute] = None
+        self.msgs: List[Message] = None
 
     def _headers(self):
         headers = {
@@ -23,35 +24,52 @@ class Disputes:
         }
         return headers
 
-    def get_disputes(
+    def get_messages(
             self, 
             limit: int = None, 
-            offset: int = None
-            ) -> List[Dispute]:
+            offset: int = None, 
+            before: str = None, 
+            after: str = None
+            ) -> List[Message]:
         
         params = {
             'limit': limit,
-            'offset': offset
+            'offset': offset,
+            'before': before,
+            'after': after
         }
         params = {k: v for k, v in params.items() if v}
 
         r = requests.get(
-            self.endpoint,
+            f"{self.endpoint}/{self.id}/messages",
             headers=self._headers(),
             params=params
         )
 
-        results = r.json()['disputes']
-        results = [Dispute(**d) for d in results]
+        results = r.json()['messages']
+        results = [Message(**t) for t in results]
         
-        self.disputes = results
+        self.msgs = results
         return results
 
-    def add_message(self, dispute_id: str, content: str) -> None:
-        url = f'{self.endpoint}/{dispute_id}/messages'
+    def requires_answer(self, user: str) -> bool:
+        msgs_sorted = sorted(
+            self.msgs,
+            key=lambda x: x.createdAt,
+            reverse=True
+        )
+
+        last_message = msgs_sorted[0]
+        result = last_message.author.login != user
+        return result
+
+    def send_message(self, content: str) -> int:
+        url = f'{self.endpoint}/{self.id}/messages'
 
         payload = {
-            "text": content
+            "text": content,
+            "attachments": [],
+            "type": "REGULAR"
         }
 
         r = requests.post(
@@ -65,4 +83,4 @@ class Disputes:
                 f"Failed to post the message. Status Code: {r.status_code}")
 
         logging.info("Message posted successfully.")
-        return
+        return 
