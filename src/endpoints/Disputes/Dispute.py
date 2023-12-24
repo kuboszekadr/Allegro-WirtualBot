@@ -9,7 +9,7 @@ from src.models.Message import Message, MessageType
 
 
 class Dispute:
-    endpoint = 'https://api.allegro.pl/sale/disputes'
+    endpoint = 'https://api.allegro.pl.allegrosandbox.pl/sale/disputes'
 
     def __init__(self, id: str, token: Token) -> None:
         self.id: str = id

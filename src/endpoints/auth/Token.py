@@ -1,5 +1,7 @@
 import requests
 import logging 
+import aiohttp
+import asyncio
 
 from datetime import datetime
 from typing import Optional
@@ -54,7 +56,7 @@ class Token:
         return wrapper
 
     @cache
-    def get_access_token(self) -> str:
+    async def get_access_token(self) -> str:
         logging.info('Refreshing token...')
         data = {
             'grant_type': 'refresh_token',
@@ -80,7 +82,7 @@ class Token:
         return None
     
     
-    def get_device_code(self):
+    async def get_device_code(self):
         # source: https://developer.allegro.pl/tutorials/uwierzytelnianie-i-autoryzacja-zlq9e75GdIR#python
         payload = {'client_id': self.client_id}
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
@@ -104,15 +106,19 @@ class Token:
             logging.error(f'An error occurred: {err}')  # Other errors
         return None      
 
-    def await_for_user_approval(self):
-        self.get_device_code()
-        while True:
-            sleep(30)
-            token = self.first_time_access_token()
+    async def await_for_user_approval(self, max_retries=5):
+        retries = 0
+        await self.get_device_code()
+        while retries < max_retries:
+            await asyncio.sleep(30)
+            token = await self.first_time_access_token()
             if token is not None:
                 return token
+            retries += 1
+        logging.error("Max retries exceeded.")
+        return None
 
-    def first_time_access_token(self):
+    async def first_time_access_token(self):
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
         data = {
             'grant_type': 'urn:ietf:params:oauth:grant-type:device_code',
@@ -137,10 +143,15 @@ class Token:
             logging.error(f'An error occurred: {err}')
         return None
     
-    def init_access_token(self):
-        self.get_device_code
-        self.await_for_user_approval()
-        self.get_access_token()
+    async def init_access_token(self):
+        try:
+            await self.get_device_code()
+            token = await self.await_for_user_approval()
+            if token is not None:
+                return await self.get_access_token()
+        except Exception as e:
+            logging.error(f'An error occurred during initialization: {e}')
+        return None
         
 
 
