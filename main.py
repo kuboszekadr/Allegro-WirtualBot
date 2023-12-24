@@ -22,9 +22,7 @@ logging.basicConfig(
 
 token = Token(
     client_id=config.allegro.client_id,
-    client_secret=config.allegro.client_secret,
-    device_code=config.allegro.device_code
-)
+    client_secret=config.allegro.client_secret,)
 user = config.allegro.user_name
 
 threads = Threads(token)

@@ -16,29 +16,27 @@ from src.models.AccessToken import AccessToken
 logging.basicConfig(level=logging.INFO)
 
 class Token:
-    endpoint = 'https://allegro.pl/auth/oauth/token'
+    endpoint = 'https://allegro.pl.allegrosandbox.pl/auth/oauth/token'
 
     def __init__(
             self,
             client_id: str,
             client_secret: str,
-            device_code: Optional[str] = None,
+            device_code: str = None,
     ):
         self.client_id: str = client_id
         self.client_secret: str = client_secret
-        self.device_code: str = device_code
-
         self.access_token: Optional(AccessToken) = AccessToken.load_from_file()
 
         if self.access_token is None:
-            self.init_device()
+            self.init_access_token()
 
     @property
     def value(self) -> str:
         ts = datetime.now().timestamp()
 
         if self.access_token.expiration_date <= ts:
-            self.access_token = self.refresh(self.access_token.refresh_token)
+            self.access_token = self.get_access_token()
 
         result = self.access_token.access_token
         return result
@@ -56,79 +54,94 @@ class Token:
         return wrapper
 
     @cache
-    def refresh(self, refresh_token: str) -> str:
+    def get_access_token(self) -> str:
         logging.info('Refreshing token...')
         data = {
             'grant_type': 'refresh_token',
-            'refresh_token': refresh_token
+            'refresh_token': self.access_token.refresh_token
         }
 
-        response = requests.post(
-            url=self.endpoint,
-            data=data,
-            verify=False,
-            allow_redirects=False,
-            auth=(self.client_id, self.client_secret)
-        )
+        try:
+            response = requests.post(
+                url=self.endpoint,
+                data=data,
+                verify=False,
+                allow_redirects=False,
+                auth=(self.client_id, self.client_secret)
+            )
+            response.raise_for_status()  # Raises an HTTPError if the response was unsuccessful
+            self.access_token = AccessToken.model_validate(response.json())
+            return self.access_token
 
-        data = response.json()
-        self.access_token = AccessToken.model_validate(data)
-        return self.access_token
+        except requests.exceptions.HTTPError as http_err:
+            logging.error(f'HTTP error occurred: {http_err}')  # Specific HTTP error
+        except Exception as err:
+            logging.error(f'An error occurred: {err}')  # Other errors
+        return None
+    
+    
+    def get_device_code(self):
+        # source: https://developer.allegro.pl/tutorials/uwierzytelnianie-i-autoryzacja-zlq9e75GdIR#python
+        payload = {'client_id': self.client_id}
+        headers = {'Content-type': 'application/x-www-form-urlencoded'}
 
-    @cache
-    def get_access_token(self) -> str:
+        try:
+            response = requests.post(
+                "https://allegro.pl.allegrosandbox.pl/auth/oauth/device",
+                auth=(self.client_id, self.client_secret),
+                headers=headers,
+                data=payload,
+                verify=False
+            )
+            response.raise_for_status()
+            result = response.json()
+            logging.warning(f"Go to: {result['verification_uri_complete']}")
+            self.device_code = result['device_code']
+            return result
+        except requests.exceptions.HTTPError as http_err:
+            logging.error(f'HTTP error occurred: {http_err}')  # Specific HTTP error
+        except Exception as err:
+            logging.error(f'An error occurred: {err}')  # Other errors
+        return None      
+
+    def await_for_user_approval(self):
+        self.get_device_code()
+        while True:
+            sleep(30)
+            token = self.first_time_access_token()
+            if token is not None:
+                return token
+
+    def first_time_access_token(self):
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
         data = {
             'grant_type': 'urn:ietf:params:oauth:grant-type:device_code',
             'device_code': self.device_code
         }
 
-        response = requests.post(
-            url=self.endpoint,
-            auth=(self.client_id, self.client_secret),
-            headers=headers,
-            data=data,
-            verify=False
-        )
-
-        result = None
-        if response.ok:
+        try:
+            response = requests.post(
+                url=self.endpoint,
+                auth=(self.client_id, self.client_secret),
+                headers=headers,
+                data=data,
+                verify=False
+            )
+            response.raise_for_status()
             self.access_token = AccessToken.model_validate(response.json())
-            result = self.access_token
-        else:
-            logging.warning(response.json())
-        return result
+            return self.access_token
 
-    def get_device_code(self):
-        # source: https://developer.allegro.pl/tutorials/uwierzytelnianie-i-autoryzacja-zlq9e75GdIR#python
-        payload = {'client_id': self.client_id}
-        headers = {'Content-type': 'application/x-www-form-urlencoded'}
-
-        response = requests.post(
-            "https://allegro.pl/auth/oauth/device",
-            auth=(self.client_id, self.client_secret),
-            headers=headers,
-            data=payload,
-            verify=False
-        )
-
-        result = response.json()
-        self.device_code = result['device_code']
-
-        return result
-
-    def await_for_access_token(self):
-        while True:
-            sleep(5)
-            token = self.get_access_token()
-
-            if token is not None:
-                return token
-
-    def init_device(self):
-        device_code = self.get_device_code()
-        logging.warn(f"Go to: {device_code['verification_uri_complete']}")
-        self.await_for_access_token()
+        except requests.exceptions.HTTPError as http_err:
+            logging.error(f'HTTP error occurred: {http_err}')
+        except Exception as err:
+            logging.error(f'An error occurred: {err}')
+        return None
+    
+    def init_access_token(self):
+        self.get_device_code
+        self.await_for_user_approval()
+        self.get_access_token()
+        
 
 
 if __name__ == '__main__':
@@ -136,7 +149,6 @@ if __name__ == '__main__':
     token = Token(
         client_id=config.allegro.client_id,
         client_secret=config.allegro.client_secret,
-        device_code=config.allegro.device_code
     )
 
     print(token.value)

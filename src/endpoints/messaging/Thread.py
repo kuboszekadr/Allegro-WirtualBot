@@ -9,7 +9,7 @@ from src.models.Message import Message, MessageType
 
 
 class Thread:
-    endpoint = 'https://api.allegro.pl/messaging/threads'
+    endpoint = 'https://api.allegro.pl.allegrosandbox.pl/messaging/threads'
 
     def __init__(self, id: str, token: Token) -> None:
         self.id: str = id

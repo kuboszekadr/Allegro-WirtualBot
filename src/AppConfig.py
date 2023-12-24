@@ -7,7 +7,6 @@ class AppConfig:
     class Allegro:
         client_id = environ.var()
         client_secret = environ.var()
-        device_code = environ.var()
         user_name = environ.var()
 
     allegro = environ.group(Allegro)
