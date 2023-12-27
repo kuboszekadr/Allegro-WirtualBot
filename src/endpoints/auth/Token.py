@@ -11,13 +11,12 @@ if __name__ == '__main__':
 
     sys.path.append(os.getcwd())
 
+from src.AppConfig import config
 from src.models.AccessToken import AccessToken
 
 logging.basicConfig(level=logging.INFO)
 
 class Token:
-    endpoint = 'https://allegro.pl/auth/oauth/token'
-
     def __init__(
             self,
             client_id: str,
@@ -32,6 +31,12 @@ class Token:
 
         if self.access_token is None:
             self.init_device()
+
+    @property
+    def endpoint(self) -> str:
+        result = f'https://allegro.pl{config.allegro.prefix}/auth/oauth/token'
+        return result
+
 
     @property
     def value(self) -> str:
@@ -105,7 +110,7 @@ class Token:
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
 
         response = requests.post(
-            "https://allegro.pl/auth/oauth/device",
+            f"https://allegro.pl{config.allegro.prefix}/auth/oauth/device",
             auth=(self.client_id, self.client_secret),
             headers=headers,
             data=payload,
@@ -117,7 +122,7 @@ class Token:
 
         return result
 
-    def await_for_access_token(self):
+    def await_access_token(self):
         while True:
             sleep(5)
             token = self.get_access_token()
@@ -128,7 +133,7 @@ class Token:
     def init_device(self):
         device_code = self.get_device_code()
         logging.warn(f"Go to: {device_code['verification_uri_complete']}")
-        self.await_for_access_token()
+        self.await_access_token()
 
 
 if __name__ == '__main__':
