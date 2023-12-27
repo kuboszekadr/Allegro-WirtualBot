@@ -6,10 +6,9 @@ from typing import List
 
 from src.endpoints.auth.Token import Token
 from src.models.Message import Message, MessageType
-
+from src.AppConfig import config
 
 class Dispute:
-    endpoint = 'https://api.allegro.pl.allegrosandbox.pl/sale/disputes'
 
     def __init__(self, id: str, token: Token) -> None:
         self.id: str = id
@@ -24,6 +23,11 @@ class Dispute:
         }
         return headers
 
+    def endpoint(self) -> str:
+        result = f'https://api.allegro.pl{config.prefix}/sale/disputes'
+        return result
+
+ 
     def get_messages(
             self, 
             limit: int = None, 
