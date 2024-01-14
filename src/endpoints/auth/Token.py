@@ -12,6 +12,7 @@ if __name__ == '__main__':
 
     sys.path.append(os.getcwd())
 
+from src.AppConfig import config
 from src.models.AccessToken import AccessToken
 from src.AppConfig import config
 
@@ -27,17 +28,24 @@ class Token:
     ):
         self.client_id: str = client_id
         self.client_secret: str = client_secret
+
         self.access_token: Optional(AccessToken) = AccessToken.load_from_file()
 
         if self.access_token is None:
             self.init_access_token()
 
     @property
+    def endpoint(self) -> str:
+        result = config.allegro.auth_token_url
+        return result
+
+
+    @property
     def value(self) -> str:
         ts = datetime.now().timestamp()
 
         if self.access_token.expiration_date <= ts:
-            self.access_token = self.get_access_token()
+            self.access_token = self.refresh(self.access_token.refresh_token)
 
         result = self.access_token.access_token
         return result
@@ -123,7 +131,6 @@ class Token:
             'grant_type': 'urn:ietf:params:oauth:grant-type:device_code',
             'device_code': self.device_code
         }
-
         try:
             response = requests.post(
                 url=self.endpoint,
@@ -132,9 +139,11 @@ class Token:
                 data=data,
                 verify=False
             )
-            response.raise_for_status()
-            self.access_token = AccessToken.model_validate(response.json())
-            return self.access_token
+
+            result = None
+            if response.ok:
+                self.access_token = AccessToken.model_validate(response.json())
+                return self.access_token
 
         except requests.exceptions.HTTPError as http_err:
             logging.error(f'HTTP error occurred: {http_err}')
@@ -161,4 +170,6 @@ if __name__ == '__main__':
         client_secret=config.allegro.client_secret,
     )
 
-    print(token.value)
+    print(token.access_token.expiration_date)
+    print(token.access_token.refresh_token)
+    
