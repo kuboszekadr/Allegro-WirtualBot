@@ -1,0 +1,12 @@
+.envProduciton
+
+# Production Variables
+
+ALLEGRO_PROD_CLIENT_ID=
+ALLEGRO_PROD_CLIENT_SECRET=
+ALLEGRO_PROD_USER_NAME=
+ALLEGRO_PROD_API_BASE_URL=https://api.allegro.pl/
+ALLEGRO_PROD_AUTH_TOKEN_URL=https://allegro.pl/auth/oauth/token
+ALLEGRO_PROD_THREADS_URL=https://api.allegro.pl/messaging/threads
+ALLEGRO_PROD_DISPUTES_URL=https://api.allegro.pl/sale/disputes
+ALLEGRO_PROD_DEVICE_CODE_URL=https://allegro.pl/auth/oauth/device

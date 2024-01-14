@@ -1,7 +1,6 @@
 import requests
 import logging 
 import aiohttp
-import asyncio
 
 from datetime import datetime
 from typing import Optional
@@ -14,17 +13,17 @@ if __name__ == '__main__':
     sys.path.append(os.getcwd())
 
 from src.models.AccessToken import AccessToken
+from src.AppConfig import config
 
 logging.basicConfig(level=logging.INFO)
 
 class Token:
-    endpoint = 'https://allegro.pl.allegrosandbox.pl/auth/oauth/token'
+    endpoint = config.allegro.auth_token_url
 
     def __init__(
             self,
             client_id: str,
             client_secret: str,
-            device_code: str = None,
     ):
         self.client_id: str = client_id
         self.client_secret: str = client_secret
@@ -56,7 +55,7 @@ class Token:
         return wrapper
 
     @cache
-    async def get_access_token(self) -> str:
+    def get_access_token(self) -> str:
         logging.info('Refreshing token...')
         data = {
             'grant_type': 'refresh_token',
@@ -82,14 +81,14 @@ class Token:
         return None
     
     
-    async def get_device_code(self):
+    def get_device_code(self):
         # source: https://developer.allegro.pl/tutorials/uwierzytelnianie-i-autoryzacja-zlq9e75GdIR#python
         payload = {'client_id': self.client_id}
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
 
         try:
             response = requests.post(
-                "https://allegro.pl.allegrosandbox.pl/auth/oauth/device",
+                config.allegro.device_code_url,
                 auth=(self.client_id, self.client_secret),
                 headers=headers,
                 data=payload,
@@ -106,19 +105,19 @@ class Token:
             logging.error(f'An error occurred: {err}')  # Other errors
         return None      
 
-    async def await_for_user_approval(self, max_retries=5):
+    def await_for_user_approval(self, max_retries=5):
         retries = 0
-        await self.get_device_code()
+        self.get_device_code()
         while retries < max_retries:
-            await asyncio.sleep(30)
-            token = await self.first_time_access_token()
+            sleep(30)
+            token = self.first_time_access_token()
             if token is not None:
                 return token
             retries += 1
         logging.error("Max retries exceeded.")
         return None
 
-    async def first_time_access_token(self):
+    def first_time_access_token(self):
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
         data = {
             'grant_type': 'urn:ietf:params:oauth:grant-type:device_code',
@@ -143,12 +142,12 @@ class Token:
             logging.error(f'An error occurred: {err}')
         return None
     
-    async def init_access_token(self):
+    def init_access_token(self):
         try:
-            await self.get_device_code()
-            token = await self.await_for_user_approval()
+            self.get_device_code()
+            token = self.await_for_user_approval()
             if token is not None:
-                return await self.get_access_token()
+                return self.get_access_token()
         except Exception as e:
             logging.error(f'An error occurred during initialization: {e}')
         return None

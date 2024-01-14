@@ -13,13 +13,15 @@ import pytz
 
 from datetime import datetime, timedelta
 from typing import List
+from src.AppConfig import config
+
 
 from src.endpoints.auth.Token import Token
 from src.endpoints.messaging.Thread import Thread
 from src.models.Thread import MessageThread
 
 class Threads:
-    endpoint = 'https://api.allegro.pl.allegrosandbox.pl/messaging/threads'
+    endpoint = config.allegro.threads_url
 
     def __init__(self, token: Token) -> None:
         self.token: Token = token

@@ -6,10 +6,11 @@ from typing import List
 
 from src.endpoints.auth.Token import Token
 from src.models.Message import Message, MessageType
+from src.AppConfig import config
 
 
 class Thread:
-    endpoint = 'https://api.allegro.pl.allegrosandbox.pl/messaging/threads'
+    endpoint = config.allegro.threads_url
 
     def __init__(self, id: str, token: Token) -> None:
         self.id: str = id
