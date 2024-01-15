@@ -21,7 +21,7 @@ from src.endpoints.messaging.Thread import Thread
 from src.models.Thread import MessageThread
 
 class Threads:
-    endpoint = config.allegro.threads_url
+    endpoint = config.allegro.api_base_url + '/messaging/threads'
 
     def __init__(self, token: Token) -> None:
         self.token: Token = token

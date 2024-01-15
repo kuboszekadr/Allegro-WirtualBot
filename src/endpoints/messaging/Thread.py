@@ -11,7 +11,7 @@ from src.AppConfig import config
 from src.AppConfig import config
 
 class Thread:
-    endpoint = config.allegro.threads_url
+    endpoint = config.allegro.api_base_url + '/messaging/thread'
 
     def __init__(self, id: str, token: Token) -> None:
         self.id: str = id
@@ -26,9 +26,9 @@ class Thread:
         }
         return headers
 
-    def endpoint(self) -> str:
-        result = f'https://api.allegro.pl{config.prefix}/messaging/threads'
-        return result
+    # def endpoint(self) -> str:
+    #     result = f'https://api.allegro.pl{config.prefix}/messaging/threads'
+    #     return result
 
     def get_messages(
             self, 

@@ -18,7 +18,7 @@ from src.models.Dispute import Dispute
 from src.AppConfig import config
 
 class Disputes:
-    endpoint = config.allegro.disputes_url
+    endpoint = config.allegro.api_base_url + '/sale/disputes'
 
     def __init__(self, token: Token) -> None:
         self.token: Token = token

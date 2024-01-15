@@ -10,7 +10,7 @@ from src.AppConfig import config
 
 
 class Dispute:
-    endpoint = config.allegro.disputes_url
+    endpoint = config.allegro.api_base_url + '/sale/disputes'
 
     def __init__(self, id: str, token: Token) -> None:
         self.id: str = id

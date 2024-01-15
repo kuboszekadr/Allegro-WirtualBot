@@ -18,7 +18,7 @@ from src.AppConfig import config
 logging.basicConfig(level=logging.INFO)
 
 class Token:
-    endpoint = config.allegro.auth_token_url
+    endpoint = config.allegro.api_base_url + '/auth/oauth/token'
 
     def __init__(
             self,
@@ -35,7 +35,7 @@ class Token:
 
     @property
     def endpoint(self) -> str:
-        result = config.allegro.auth_token_url
+        result = self.endpoint
         return result
 
 
