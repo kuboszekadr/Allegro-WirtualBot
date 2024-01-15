@@ -1,6 +1,5 @@
 import requests
 import logging 
-import aiohttp
 
 from datetime import datetime
 from typing import Optional
