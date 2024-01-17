@@ -2,6 +2,11 @@ import logging
 
 from time import sleep
 
+import sys
+import os
+sys.path.append(os.getcwd())
+
+
 from datetime import datetime as dt
 from tqdm import tqdm
 from src.AppConfig import config
