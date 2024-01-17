@@ -26,13 +26,13 @@ class Dispute:
         return headers
 
     def get_messages(
-            self, 
-            limit: int = None, 
-            offset: int = None, 
-            before: str = None, 
+            self,
+            limit: int = None,
+            offset: int = None,
+            before: str = None,
             after: str = None
-            ) -> List[Message]:
-        
+    ) -> List[Message]:
+
         params = {
             'limit': limit,
             'offset': offset,
@@ -49,7 +49,7 @@ class Dispute:
 
         results = r.json()['messages']
         results = [Message(**t) for t in results]
-        
+
         self.msgs = results
         return results
 
@@ -84,4 +84,4 @@ class Dispute:
                 f"Failed to post the message. Status Code: {r.status_code}")
 
         logging.info("Message posted successfully.")
-        return 
+        return

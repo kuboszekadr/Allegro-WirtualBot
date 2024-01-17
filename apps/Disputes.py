@@ -39,7 +39,7 @@ sent = 0
 for dispute in tqdm(disputes.disputes):
     logging.info(f"Sending message to dispute: {dispute.id}")
     dispute.send_message("""Dzień dobry, 
-                        dziękujemy za kontakt. Nasz asystent w niedługim czasie wróci z odpowiedzią na Twoje pytanie. Pozdrawiamy serdecznie!""")
+                        dziękujemy za kontakt. Nasz asystent w niedługim czasie wróci z odpowiedzią. Pozdrawiamy serdecznie!""")
     logging.info(f"Sending message to dispute: {dispute.id} - DONE")
     sent += 1
     sleep(1)

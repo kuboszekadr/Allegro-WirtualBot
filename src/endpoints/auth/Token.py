@@ -18,15 +18,15 @@ from src.AppConfig import config
 logging.basicConfig(level=logging.INFO)
 
 class Token:
-    endpoint = config.allegro.api_base_url + '/auth/oauth/token'
-
     def __init__(
             self,
             client_id: str,
             client_secret: str,
+            device_code: Optional[str] = None
     ):
         self.client_id: str = client_id
         self.client_secret: str = client_secret
+        self.device_code: str = device_code
 
         self.access_token: Optional(AccessToken) = AccessToken.load_from_file()
 
@@ -35,7 +35,7 @@ class Token:
 
     @property
     def endpoint(self) -> str:
-        result = self.endpoint
+        result = config.allegro.auth_base_url + '/token'
         return result
 
 
@@ -44,7 +44,7 @@ class Token:
         ts = datetime.now().timestamp()
 
         if self.access_token.expiration_date <= ts:
-            self.access_token = self.refresh(self.access_token.refresh_token)
+            self.access_token = self.get_access_token()
 
         result = self.access_token.access_token
         return result

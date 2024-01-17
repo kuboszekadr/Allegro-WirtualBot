@@ -15,7 +15,6 @@ from datetime import datetime, timedelta
 from typing import List
 from src.AppConfig import config
 
-
 from src.endpoints.auth.Token import Token
 from src.endpoints.messaging.Thread import Thread
 from src.models.Thread import MessageThread

@@ -24,12 +24,11 @@ logging.basicConfig(
     filemode='w'
 )
 
+user = config.allegro.user_name
 token = Token(
     client_id=config.allegro.client_id,
-    client_secret=config.allegro.client_secret,)
-
-
-user = config.allegro.user_name
+    client_secret=config.allegro.client_secret
+    )
 
 threads = Threads(token)
 threads.get(cutoff=2)
