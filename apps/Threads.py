@@ -1,6 +1,11 @@
 import logging
-
 from time import sleep
+
+import sys
+import os
+
+sys.path.append(os.getcwd())
+
 
 from datetime import datetime as dt
 from tqdm import tqdm
@@ -8,6 +13,7 @@ from src.AppConfig import config
 
 from src.endpoints.auth.Token import Token
 from src.endpoints.messaging.Threads import Threads
+
 
 logging.info('Starting Allegro Assistant')
 log_file = dt.now().strftime("%Y-%m-%d.log")
@@ -18,12 +24,11 @@ logging.basicConfig(
     filemode='w'
 )
 
+user = config.allegro.user_name
 token = Token(
     client_id=config.allegro.client_id,
-    client_secret=config.allegro.client_secret,
-    device_code=config.allegro.device_code
-)
-user = config.allegro.user_name
+    client_secret=config.allegro.client_secret
+    )
 
 threads = Threads(token)
 threads.get(cutoff=2)

@@ -8,10 +8,9 @@ from src.endpoints.auth.Token import Token
 from src.models.Message import Message, MessageType
 from src.AppConfig import config
 
-from src.AppConfig import config
 
-class Thread:
-    endpoint = config.allegro.api_base_url + '/messaging/thread'
+class Dispute:
+    endpoint = config.allegro.api_base_url + '/sale/disputes'
 
     def __init__(self, id: str, token: Token) -> None:
         self.id: str = id
@@ -26,18 +25,14 @@ class Thread:
         }
         return headers
 
-    # def endpoint(self) -> str:
-    #     result = f'https://api.allegro.pl{config.prefix}/messaging/threads'
-    #     return result
-
     def get_messages(
-            self, 
-            limit: int = None, 
-            offset: int = None, 
-            before: str = None, 
+            self,
+            limit: int = None,
+            offset: int = None,
+            before: str = None,
             after: str = None
-            ) -> List[Message]:
-        
+    ) -> List[Message]:
+
         params = {
             'limit': limit,
             'offset': offset,
@@ -54,7 +49,7 @@ class Thread:
 
         results = r.json()['messages']
         results = [Message(**t) for t in results]
-        
+
         self.msgs = results
         return results
 
@@ -89,5 +84,4 @@ class Thread:
                 f"Failed to post the message. Status Code: {r.status_code}")
 
         logging.info("Message posted successfully.")
-        return 
-    
+        return
