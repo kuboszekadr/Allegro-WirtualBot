@@ -10,6 +10,7 @@ class AppConfig:
         user_name = environ.var()
         api_base_url=environ.var()
         auth_base_url=environ.var()
+        device_code_url=environ.var()
 
     allegro = environ.group(Allegro)
 

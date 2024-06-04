@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "envFile": "${workspaceFolder}/.env-sandbox"
+            "envFile": "${workspaceFolder}/.env-prod"
         }
     ]
 }

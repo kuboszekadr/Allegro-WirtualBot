@@ -6,7 +6,6 @@ import os
 
 sys.path.append(os.getcwd())
 
-
 from datetime import datetime as dt
 from tqdm import tqdm
 from src.AppConfig import config
@@ -41,7 +40,7 @@ for thread in tqdm(threads.threads):
     if thread.requires_answer(user):
         logging.info(f"Sending message to thread: {thread.id}")
         thread.send_message("""Dzień dobry, 
-                            bardzo dziękujemy zainteresowanie nasza aukcja i kontakt z nami. Nasz asystent w niedługim czasie wróci z odpowiedzią na Twoje pytanie. Pozdrawiamy serdecznie!""")
+                            bardzo dziękujemy zainteresowanie nasza aukcja i kontak. Nasz asystent w niedługo wróci z odpowiedzią.""")
         logging.info(f"Sending message to thread: {thread.id} - DONE")
         sent += 1
         sleep(1)
