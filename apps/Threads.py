@@ -40,7 +40,8 @@ for thread in tqdm(threads.threads):
     if thread.requires_answer(user):
         logging.info(f"Sending message to thread: {thread.id}")
         thread.send_message("""Dzień dobry, 
-                            bardzo dziękujemy zainteresowanie nasza aukcja i kontak. Nasz asystent w niedługo wróci z odpowiedzią.""")
+                            bardzo dziękujemy zainteresowanie nasza aukcja i kontakt. 
+                            Nasz asystent w niedługo wróci z odpowiedzią.""")
         logging.info(f"Sending message to thread: {thread.id} - DONE")
         sent += 1
         sleep(1)
