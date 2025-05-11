@@ -19,7 +19,7 @@ log_file = dt.now().strftime("%Y-%m-%d.log")
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    filename=f'logs/{log_file}.log',
+    filename=f'./.logs/{log_file}.log',
     filemode='w'
 )
 

@@ -1,0 +1,9 @@
+services:
+  invoice-generator:
+    env_file: ../.env-prod
+    build:
+      dockerfile: .dockerfile
+    command: sleep infinity
+    volumes:
+      - ..:/app
+
