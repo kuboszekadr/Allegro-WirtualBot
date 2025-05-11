@@ -1,5 +1,5 @@
 services:
-  invoice-generator:
+  allegro-autoresponder:
     env_file: ../.env-prod
     build:
       dockerfile: .dockerfile

@@ -28,7 +28,7 @@ class Token:
         self.client_secret: str = client_secret
         self.device_code: str = device_code
 
-        self.access_token: Optional(AccessToken) = AccessToken.load_from_file()
+        self.access_token: Optional[AccessToken] = AccessToken.load_from_file()
 
         if self.access_token is None:
             self.init_access_token()

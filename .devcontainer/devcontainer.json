@@ -1,6 +1,6 @@
 {
-    "name": "Invoice generator",
-    "service": "invoice-generator",
+    "name": "Allegro-Autoresponder",
+    "service": "allegro-autoresponder",
     "dockerComposeFile": "docker-compose.yaml",
     "workspaceFolder": "/app",
     "customizations": {
