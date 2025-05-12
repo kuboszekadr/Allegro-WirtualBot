@@ -1,24 +1,15 @@
-import environ
+from pydantic_settings import BaseSettings
 
-@environ.config(prefix='')
-class AppConfig:
+class AppConfig(BaseSettings):
+    
+    client_id: str
+    client_secret: str
+    user_name: str
+    api_base_url: str
+    auth_base_url: str
+    device_code_url: str
 
-    @environ.config(prefix='ALLEGRO')
-    class Allegro:
-        client_id = environ.var()
-        client_secret = environ.var()
-        user_name = environ.var()
-        api_base_url=environ.var()
-        auth_base_url=environ.var()
-        device_code_url=environ.var()
+    class Config:
+        env_prefix = 'ALLEGRO_'
 
-    allegro = environ.group(Allegro)
-
-config = AppConfig.from_environ()
-
-if __name__ == '__main__':
-
-    print(config.allegro.client_id)
-    print(config.allegro.client_secret)
-    print(config.allegro.user_name)
-    print(config.allegro.api_base_url)
+config = AppConfig()

@@ -13,7 +13,6 @@ if __name__ == '__main__':
 
 from src.AppConfig import config
 from src.models.AccessToken import AccessToken
-from src.AppConfig import config
 
 logging.basicConfig(level=logging.INFO)
 
@@ -35,7 +34,7 @@ class Token:
 
     @property
     def endpoint(self) -> str:
-        result = config.allegro.auth_base_url + '/token'
+        result = config.auth_base_url + '/token'
         return result
 
 
@@ -95,7 +94,7 @@ class Token:
 
         try:
             response = requests.post(
-                config.allegro.device_code_url,
+                config.device_code_url,
                 auth=(self.client_id, self.client_secret),
                 headers=headers,
                 data=payload,
@@ -165,8 +164,8 @@ class Token:
 if __name__ == '__main__':
     from src.AppConfig import config
     token = Token(
-        client_id=config.allegro.client_id,
-        client_secret=config.allegro.client_secret,
+        client_id=config.client_id,
+        client_secret=config.client_secret,
     )
 
     print(token.access_token.expiration_date)

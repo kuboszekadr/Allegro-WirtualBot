@@ -26,10 +26,10 @@ logging.basicConfig(
 )
 
 token = Token(
-    client_id=config.allegro.client_id,
-    client_secret=config.allegro.client_secret,)
+    client_id=config.client_id,
+    client_secret=config.client_secret,)
 
-user = config.allegro.user_name
+user = config.user_name
 
 disputes = Disputes(token)
 disputes.get()
