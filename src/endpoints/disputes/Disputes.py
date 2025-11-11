@@ -15,9 +15,10 @@ from typing import List
 
 from src.endpoints.auth.Token import Token
 from src.models.Dispute import Dispute
+from src.AppConfig import config
 
 class Disputes:
-    endpoint = 'https://api.allegro.pl/sale/disputes'
+    endpoint = config.api_base_url + '/sale/disputes'
 
     def __init__(self, token: Token) -> None:
         self.token: Token = token
@@ -68,9 +69,8 @@ class Disputes:
 if __name__ == '__main__':
     from src.AppConfig import config
     token = Token(
-        client_id=config.allegro.client_id,
-        client_secret=config.allegro.client_secret,
-        device_code=config.allegro.device_code
+        client_id=config.client_id,
+        client_secret=config.client_secret,
     )
 
     disputes = Disputes(token)

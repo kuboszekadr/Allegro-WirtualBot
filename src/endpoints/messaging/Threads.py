@@ -13,13 +13,14 @@ import pytz
 
 from datetime import datetime, timedelta
 from typing import List
+from src.AppConfig import config
 
 from src.endpoints.auth.Token import Token
 from src.endpoints.messaging.Thread import Thread
 from src.models.Thread import MessageThread
 
 class Threads:
-    endpoint = 'https://api.allegro.pl/messaging/threads'
+    endpoint = config.api_base_url + '/messaging/threads'
 
     def __init__(self, token: Token) -> None:
         self.token: Token = token
@@ -70,9 +71,8 @@ class Threads:
 if __name__ == '__main__':
     from src.AppConfig import config
     token = Token(
-        client_id=config.allegro.client_id,
-        client_secret=config.allegro.client_secret,
-        device_code=config.allegro.device_code
+        client_id=config.client_id,
+        client_secret=config.client_secret,
     )
 
     threads = Threads(token)

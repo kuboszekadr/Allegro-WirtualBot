@@ -12,7 +12,7 @@ class AccessToken (BaseModel):
     refresh_token: str
     expires_in: int
     scope: str = Field(min_items=1)
-    allegro_api: bool
+    # allegro_api: bool
     iss: str
     jti: str
     expiration_date: int = None
